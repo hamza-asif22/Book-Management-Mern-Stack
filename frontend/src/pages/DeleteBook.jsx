@@ -5,3 +5,5 @@ export const DeleteBook = () => {
     <div>DeleteBook</div>
   )
 }
+
+export default DeleteBook

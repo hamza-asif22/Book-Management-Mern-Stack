@@ -5,3 +5,5 @@ export const CreateBooks = () => {
     <div>CreateBooks</div>
   )
 }
+
+export default CreateBooks

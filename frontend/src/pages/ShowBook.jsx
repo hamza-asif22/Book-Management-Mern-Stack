@@ -5,3 +5,5 @@ export const ShowBook = () => {
     <div>ShowBook</div>
   )
 }
+
+export default ShowBook
