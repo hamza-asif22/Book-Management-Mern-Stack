@@ -3,6 +3,7 @@ import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 const CreateBooks = () => {
   const [title, setTitle] = useState('');
@@ -10,8 +11,11 @@ const CreateBooks = () => {
   const [publishYear, setPublishYear] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleSaveBook = () => {
+  const handleSaveBook = (e) => {
+    e.preventDefault();
+
     const data = {
       title,
       author,
@@ -23,11 +27,12 @@ const CreateBooks = () => {
       .post('http://localhost:5555/books', data)
       .then(() => {
         setLoading(false);
+        enqueueSnackbar('Book created successfully', { variant: 'success' });
         navigate('/'); // Redirect to home or another page after successful creation
       })
       .catch((error) => {
         setLoading(false);
-        alert('An error occurred. Please check the console.');
+        enqueueSnackbar('An error occurred while creating the book.', { variant: 'error' });
         console.log(error);
       });
   };
@@ -36,8 +41,8 @@ const CreateBooks = () => {
     <div className='p-4'>
       <BackButton />
       <h1 className='text-3xl my-4'>Create Book</h1>
-      {loading ? <Spinner /> : ''}
-      <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
+      {loading && <Spinner />}
+      <form className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto' onSubmit={handleSaveBook}>
         <div className='my-4'>
           <label className='text-xl mr-4 text-gray-500'>Title</label>
           <input
@@ -45,6 +50,7 @@ const CreateBooks = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className='border-2 border-gray-500 px-4 py-4 w-full'
+            required
           />
         </div>
         <div className='my-4'>
@@ -54,6 +60,7 @@ const CreateBooks = () => {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             className='border-2 border-gray-500 px-4 py-4 w-full'
+            required
           />
         </div>
         <div className='my-4'>
@@ -63,12 +70,13 @@ const CreateBooks = () => {
             value={publishYear}
             onChange={(e) => setPublishYear(e.target.value)}
             className='border-2 border-gray-500 px-4 py-4 w-full'
+            required
           />
         </div>
-        <button className='p-2 bg-sky-300 m-8' onClick={handleSaveBook}>
+        <button type='submit' className='p-2 bg-sky-300 m-8'>
           Save
         </button>
-      </div>
+      </form>
     </div>
   );
 };
